@@ -1,2 +1,16 @@
 ---
 # vars file for hmpps-delius-core-weblogic-installer
+
+system_users:
+  - name: oracle
+    uid: 1200
+    group: oinstall
+    gid: 1100
+    profile: |
+          alias ll='ls -lah'
+          alias cp='cp -iv'
+          export MW_HOME={{ mw_home }}
+          export WLS_HOME={{ wls_home }}
+          export JAVA_HOME={{ java_home }}
+          PATH=$JAVA_HOME/bin:$PATH
+          export PATH

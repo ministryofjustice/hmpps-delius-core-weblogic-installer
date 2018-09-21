@@ -1,2 +1,12 @@
 ---
-# tasks file for hmpps-delius-core-weblogic-installer
+
+- name: Load in our vars
+  include_vars:
+    file: main.yml
+    name: weblogic_vars
+
+- name: Create our users
+  include_role: create-users.yml
+  with_items: "{{ weblogic_vars.system_users }}"
+  loop_control:
+    loop_var: wls_service_user
