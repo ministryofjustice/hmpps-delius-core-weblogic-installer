@@ -24,3 +24,9 @@ system_users:
 
 mount_owner: "{{ system_users.0.name }}"
 mount_group: "{{ system_users.0.group }}"
+
+artefact_path: "oracle/wls"
+weblogic_artefacts:
+  - name: 'wls1036_generic.jar'
+  - name: 'p27395085_1036_Generic.zip'
+  - name: 'p11817754_10360180417_Generic.zip'

@@ -1,0 +1,25 @@
+---
+
+- name: Copy install files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+     - { src: 'silent.xml.j2', dest: '{{ mount_point }}/software/silent.xml', mode: '0775', owner: "{{ wls_service_user.name }}", group: "{{ wls_service_user.group }}" }
+
+#TODO: answer file for node manager needs yes for managed and no for admin
+- name: Install weblogic
+  shell: "java -Xmx1024m -jar {{ mount_point }}/software/wls1036_generic.jar -mode=silent -silent_xml={{ mount_point }}/software/silent.xml"
+  become: yes
+  become_user: "{{  wls_service_user.name }}"
+  register: wls_install
+
+- name: Check Weblogic version
+  shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && java weblogic.version | grep "WebLogic Server"'
+  become: yes
+  become_user: "{{ wls_service_user.name }}"
+  register: wls_version
+  changed_when: false

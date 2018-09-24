@@ -11,5 +11,20 @@
   loop_control:
     loop_var: wls_service_user
 
-- name: Create our mount point if it does not exist
-  include: mount-point.yml
+- name: Create base directory structure
+  include: create-directories.yml
+  vars:
+    - wls_service_user: "{{ weblogic_vars.system_users[0] }}"
+
+- stat: "path={{ wls_home }}/server/bin/setWLSEnv.sh"
+  register: wls_file
+
+- block:
+    - name: Get our WL artifacts from S3
+      include: copy-artifacts.yml
+      with_items: "{{ weblogic_artefacts }}"
+      loop_control:
+        loop_var: artefact
+      vars:
+        - wls_service_user: "{{ weblogic_vars.system_users[0] }}"
+  when: wls_file.stat.exists == false
