@@ -1,7 +1,8 @@
 ---
 # vars file for hmpps-delius-core-weblogic-installer
 
-mount_point: srv
+mount_point: "{{ alternate_mount_point|default('/u01') }}"
+
 mw_home: "{{ mount_point }}/app/oracle/middleware"
 wls_home: "{{ mw_home }}/wlserver_10.3"
 java_home: "{{ lookup('env', 'JAVA_HOME') or '/usr/java/latest' }}"
@@ -19,3 +20,7 @@ system_users:
           export JAVA_HOME={{ java_home }}
           PATH=$JAVA_HOME/bin:$PATH
           export PATH
+
+
+mount_owner: "{{ system_users.0.name }}"
+mount_group: "{{ system_users.0.group }}"

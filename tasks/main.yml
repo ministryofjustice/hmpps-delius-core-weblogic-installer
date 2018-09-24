@@ -10,3 +10,6 @@
   with_items: "{{ weblogic_vars.system_users }}"
   loop_control:
     loop_var: wls_service_user
+
+- name: Create our mount point if it does not exist
+  include: mount-point.yml
