@@ -27,4 +27,10 @@
         loop_var: artefact
       vars:
         - wls_service_user: "{{ weblogic_vars.system_users[0] }}"
+
+    - name: Install WL
+      include: install-weblogic.yml
+      vars:
+        - wls_service_user: "{{ weblogic_vars.system_users[0] }}"
+      
   when: wls_file.stat.exists == false
