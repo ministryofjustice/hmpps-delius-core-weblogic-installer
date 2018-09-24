@@ -1,6 +1,11 @@
 ---
 # vars file for hmpps-delius-core-weblogic-installer
 
+mount_point: srv
+mw_home: "{{ mount_point }}/app/oracle/middleware"
+wls_home: "{{ mw_home }}/wlserver_10.3"
+java_home: "{{ lookup('env', 'JAVA_HOME') or '/usr/java/latest' }}"
+
 system_users:
   - name: oracle
     uid: 1200

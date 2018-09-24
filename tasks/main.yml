@@ -6,7 +6,7 @@
     name: weblogic_vars
 
 - name: Create our users
-  include_role: create-users.yml
+  include: create-users.yml
   with_items: "{{ weblogic_vars.system_users }}"
   loop_control:
     loop_var: wls_service_user
