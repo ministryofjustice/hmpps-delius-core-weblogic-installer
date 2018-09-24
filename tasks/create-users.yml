@@ -21,11 +21,13 @@
     home: "{{ wls_service_user.home | default('/home/' + wls_service_user.name) }}"
     createhome: yes
 
-- set_fact:
+- name: Set our profile file location on Debian derivatives
+  set_fact:
     profile_file: ".profile"
   when: ansible_os_family == "Debian"
 
-- set_fact:
+- name: Set our profile file location on RedHat derivatives
+  set_fact:
     profile_file: ".bash_profile"
   when: ansible_os_family == "RedHat"
 
