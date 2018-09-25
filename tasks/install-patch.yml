@@ -1,0 +1,32 @@
+---
+
+- block:
+    - name: Unpack patch set to build
+      unarchive:
+          src: "{{ mount_point }}/software/{{ patch_file.name }}.zip"
+          dest: "{{ cache_path }}"
+          remote_src: yes
+      become: yes
+      become_user: "{{ wls_service_user.name }}"
+      creates: "{{ cache_path }}/{{ patch_file.creates }}"
+  when: patch_file.creates|default(false)
+
+- block:
+    - name: Unpack patch set to build
+      unarchive:
+          src: "{{ mount_point }}/software/{{ patch_file.name }}.zip"
+          dest: "{{ cache_path }}"
+          remote_src: yes
+      become: yes
+      become_user: "{{ wls_service_user.name }}"
+  when: patch_file.creates|default(false)
+
+- name: Display our command
+  debug:
+    msg: "{{ patch_file.command }}"
+
+- name: Install patch
+  shell: "{{ patch_file.command }}"
+  become: yes
+  become_user: "{{  wls_service_user.name }}"
+  register: patch

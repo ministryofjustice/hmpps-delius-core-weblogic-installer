@@ -2,7 +2,6 @@
 
 - name: Set patch facts
   set_fact:
-    patch_number: "{{ patch_file.name.split('_')[0]|trim }}"
     cache_path: "{{ mw_home }}/utils/bsu/cache_dir"
 
 - stat: "path={{ cache_path }}"
@@ -18,27 +17,6 @@
   when:
     - cache_dir.stat.exists == false
 
-- block:
-    - name: Unpack patch set to build
-      unarchive:
-          src: "{{ mount_point }}/software/{{ patch_file.name }}.zip"
-          dest: "{{ cache_path }}"
-          remote_src: yes
-      become: yes
-      become_user: "{{ wls_service_user.name }}"
-      creates: "{{ cache_path }}/{{ patch_file.creates }}"
-  when: patch_file.creates|default(false)
-
-- block:
-    - name: Unpack patch set to build
-      unarchive:
-          src: "{{ mount_point }}/software/{{ patch_file.name }}.zip"
-          dest: "{{ cache_path }}"
-          remote_src: yes
-      become: yes
-      become_user: "{{ wls_service_user.name }}"
-  when: patch_file.creates|default(false)
-
 - name: Correct memory profile for bsu utility
   lineinfile:
     path: "{{ mw_home }}/utils/bsu/bsu.sh"
@@ -50,8 +28,8 @@
     path: "{{ mw_home }}/utils/bsu/bsu.sh"
     mode: 0774
 
-- name: Install patch
-  shell: "{{ patch_file.command }}"
-  become: yes
-  become_user: "{{  wls_service_user.name }}"
-  register: patch
+- name: Install our listed patches
+  include: install-patch.yml
+  with_items: "{{ weblogic_patches }}"
+  loop_control:
+    loop_var: patch_file

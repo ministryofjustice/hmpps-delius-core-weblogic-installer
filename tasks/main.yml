@@ -37,10 +37,7 @@
 
     - name: Ensure we are correctly patched
       include: patch-weblogic.yml
-      with_items: "{{ weblogic_patches }}"
-      loop_control:
-        loop_var: patch_file
       vars:
         - wls_service_user: "{{ weblogic_vars.system_users[0] }}"
 
-  when: wls_file.stat.exists == false
+  when: wls_file.stat.exists == false or force_install|default(false)
