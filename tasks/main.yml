@@ -40,4 +40,12 @@
       vars:
         - wls_service_user: "{{ weblogic_vars.system_users[0] }}"
 
+    - name: Clean up after ourselves
+      file:
+        state: absent
+        path: "{{ artefact.dest|default(mount_point + '/software/' + artefact.name) }}"
+      with_items: "{{ weblogic_artefacts }}"
+      loop_control:
+        loop_var: artefact
+
   when: wls_file.stat.exists == false or force_install|default(false)
