@@ -21,10 +21,6 @@
       become_user: "{{ wls_service_user.name }}"
   when: patch_file.creates_file|default(false)
 
-- name: Display our command
-  debug:
-    msg: "{{ patch_file.command }}"
-
 - name: Install patch
   shell: "{{ patch_file.command }}"
   become: yes

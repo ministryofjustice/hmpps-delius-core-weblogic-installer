@@ -1,38 +1,61 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Ansible role to install weblogic and required patches.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+ - botocore
+ - boto
+ - boto3
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+```yaml
+mount_point: "{{ alternate_mount_point|default('/srv') }}"
 
-Dependencies
-------------
+mw_home: "{{ mount_point }}/app/oracle/middleware"
+wls_home: "{{ mw_home }}/wlserver"
+java_home: "{{ lookup('env', 'JAVA_HOME') or '/usr/java/latest' }}"
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+system_users:
+  # List of system users for ansible to create
+  - name: user_name
+    uid: user_id
+    group: user_group
+    gid: user_group_id
+    profile: |
+          alias ll='ls -lah'
+          alias cp='cp -iv'
+          export MW_HOME={{ mw_home }}
+          export WLS_HOME={{ wls_home }}
+          export JAVA_HOME={{ java_home }}
+          PATH=$JAVA_HOME/bin:$PATH
+          export PATH
 
-Example Playbook
-----------------
+mount_owner: "{{ system_users.0.name }}"
+mount_group: "{{ system_users.0.group }}"
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+artefact_path: "path/to/our/s3/artifacts"
+weblogic_artefacts:
+  - name: 'artifact.jar'
+  - name: 'patch.zip'
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+weblogic_patches:
+  - name: "patch" #Excludes the extension
+    command: "cli install command"
+    creates_file: "file_name_created_during_extraction"
+nodemgr_port: "xxxx"
+```
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+HMPPS Digital Studio
