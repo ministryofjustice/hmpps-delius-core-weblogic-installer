@@ -8,8 +8,8 @@
           remote_src: yes
       become: yes
       become_user: "{{ wls_service_user.name }}"
-      creates: "{{ cache_path }}/{{ patch_file.creates }}"
-  when: patch_file.creates|default(false)
+      creates: "{{ cache_path }}/{{ patch_file.creates_file }}"
+  when: patch_file.creates_file|default(false)
 
 - block:
     - name: Unpack patch set to build
@@ -19,7 +19,7 @@
           remote_src: yes
       become: yes
       become_user: "{{ wls_service_user.name }}"
-  when: patch_file.creates|default(false)
+  when: patch_file.creates_file|default(false)
 
 - name: Display our command
   debug:

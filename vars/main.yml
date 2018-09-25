@@ -34,13 +34,13 @@ weblogic_artefacts:
 
 weblogic_patches:
   - name: "p27238412_1036_Generic"
-    command: ". ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && cd ${MW_HOME}/utils/bsu/cache_dir && ./bsu_update.sh install"
-    creates: "bsu_update.sh"
+    command: ". ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && cd ${MW_HOME}/utils/bsu/cache_dir && bash bsu_update.sh install"
+    creates_file: "bsu_update.sh"
   - name: "p27395085_1036_Generic"
-    creates: "GFWX.jar"
+    creates_file: "GFWX.jar"
     command: ". ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && cd ${MW_HOME}/utils/bsu && ./bsu.sh -install -patch_download_dir=${MW_HOME}/utils/bsu/cache_dir -patchlist=GFWX -prod_dir=${WLS_HOME} -verbose -log=GFWX_patch.log"
   - name: "p11817754_10360180417_Generic"
-    creates: "4SJP.jar"
+    creates_file: "4SJP.jar"
     command: ". ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && cd ${MW_HOME}/utils/bsu && ./bsu.sh -install -patch_download_dir=${MW_HOME}/utils/bsu/cache_dir -patchlist=4SJP -prod_dir=${WLS_HOME} -verbose -log=4SJP_patch.log"
 
 nodemgr_port: "5556"
