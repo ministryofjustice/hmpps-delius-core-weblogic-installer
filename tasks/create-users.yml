@@ -1,0 +1,41 @@
+---
+
+- name: Creating groups
+  group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid }}"
+  with_items:
+    - { name: "{{ wls_service_user.group }}", gid: "{{ wls_service_user.gid }}" }
+    - { name: "{{ wls_service_user.name }}", gid: "{{ wls_service_user.uid }}" }
+  register: wls_user_groups
+
+
+- name: User creation
+  user:
+    name: "{{ wls_service_user.name }}"
+    group: "{{ wls_service_user.group }}"
+    groups: "{{ wls_service_user.name }}, {{ wls_service_user.group }}"
+    shell: "{{ wls_service_user_shell|default('/bin/bash') }}"
+    comment: "{{ wls_service_user.name }}"
+    uid: "{{ wls_service_user.uid }}"
+    home: "{{ wls_service_user.home | default('/home/' + wls_service_user.name) }}"
+    createhome: yes
+
+- name: Set our profile file location on Debian derivatives
+  set_fact:
+    profile_file: ".profile"
+  when: ansible_os_family == "Debian"
+
+- name: Set our profile file location on RedHat derivatives
+  set_fact:
+    profile_file: ".bash_profile"
+  when: ansible_os_family == "RedHat"
+
+- name: Setup user profiles
+  blockinfile:
+    block: "{{ wls_service_user.profile}}"
+    dest: "{{ wls_service_user.home | default('/home/' + wls_service_user.name) }}/{{ profile_file }}"
+    owner: "{{ wls_service_user.name }}"
+    group: "{{ wls_service_user.group }}"
+    mode: 0644
+    create: true

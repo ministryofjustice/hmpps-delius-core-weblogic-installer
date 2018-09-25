@@ -1,0 +1,35 @@
+---
+
+- name: Set patch facts
+  set_fact:
+    cache_path: "{{ mw_home }}/utils/bsu/cache_dir"
+
+- stat: "path={{ cache_path }}"
+  register: cache_dir
+
+- name: Create cache dir
+  file:
+    path: "{{ cache_path }}"
+    owner: "{{ wls_service_user.name }}"
+    group: "{{ wls_service_user.group }}"
+    mode: 0775
+    state: directory
+  when:
+    - cache_dir.stat.exists == false
+
+- name: Correct memory profile for bsu utility
+  lineinfile:
+    path: "{{ mw_home }}/utils/bsu/bsu.sh"
+    regexp: '^MEM_ARGS='
+    line: 'MEM_ARGS="-Xms2048m -Xmx2048m"'
+
+- name: ensure permission on file are correct
+  file:
+    path: "{{ mw_home }}/utils/bsu/bsu.sh"
+    mode: 0774
+
+- name: Install our listed patches
+  include: install-patch.yml
+  with_items: "{{ weblogic_patches }}"
+  loop_control:
+    loop_var: patch_file

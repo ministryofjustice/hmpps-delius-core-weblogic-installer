@@ -1,0 +1,4 @@
+---
+# vars file for hmpps-delius-core-weblogic-installer
+
+#These are declared in the packer repo, however there is an example in the readme

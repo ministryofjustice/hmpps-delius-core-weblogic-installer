@@ -1,0 +1,51 @@
+---
+
+- name: Load in our vars
+  include_vars:
+    file: main.yml
+    name: weblogic_vars
+
+- name: Create our users
+  include: create-users.yml
+  with_items: "{{ system_users }}"
+  loop_control:
+    loop_var: wls_service_user
+
+- name: Create base directory structure
+  include: create-directories.yml
+  vars:
+    - wls_service_user: "{{ system_users[0] }}"
+
+- name: Check is WL is installed
+  stat:
+    path: "{{ wls_home }}/server/bin/setWLSEnv.sh"
+  register: wls_file
+
+- block:
+    - name: Get our WL artifacts from S3
+      include: copy-artifacts.yml
+      with_items: "{{ weblogic_artefacts }}"
+      loop_control:
+        loop_var: artefact
+      vars:
+        - wls_service_user: "{{ system_users[0] }}"
+
+    - name: Install WL
+      include: install-weblogic.yml
+      vars:
+        - wls_service_user: "{{ system_users[0] }}"
+
+    - name: Ensure we are correctly patched
+      include: patch-weblogic.yml
+      vars:
+        - wls_service_user: "{{ system_users[0] }}"
+
+    - name: Clean up after ourselves
+      file:
+        state: absent
+        path: "{{ artefact.dest|default(mount_point + '/software/' + artefact.name) }}"
+      with_items: "{{ weblogic_artefacts }}"
+      loop_control:
+        loop_var: artefact
+
+  when: wls_file.stat.exists == false or force_install|default(false)
