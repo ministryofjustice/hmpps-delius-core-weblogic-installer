@@ -14,5 +14,4 @@
   systemd:
     name: weblogic.service
     state: stopped
-    enabled: yes
     daemon_reload: yes
