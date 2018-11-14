@@ -8,7 +8,7 @@
     - { name: "{{ wls_service_user.group }}", gid: "{{ wls_service_user.gid }}" }
     - { name: "{{ wls_service_user.name }}", gid: "{{ wls_service_user.uid }}" }
   register: wls_user_groups
-
+  ignore_errors: true
 
 - name: User creation
   user:
@@ -20,6 +20,7 @@
     uid: "{{ wls_service_user.uid }}"
     home: "{{ wls_service_user.home | default('/home/' + wls_service_user.name) }}"
     createhome: yes
+  ignore_errors: true
 
 - name: Set our profile file location on Debian derivatives
   set_fact:
