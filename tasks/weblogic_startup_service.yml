@@ -1,0 +1,17 @@
+---
+
+- name: Create service startup template for admin server
+  become: yes
+  template:
+    src: 'weblogic.service.j2'
+    dest: '/etc/systemd/system/weblogic.service'
+    mode: '0644'
+    owner: "root"
+    group: "root"
+
+- name: Reload the (new) service which will also start it
+  become: yes
+  systemd:
+    name: weblogic.service
+    state: stopped
+    daemon_reload: yes

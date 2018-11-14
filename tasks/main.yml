@@ -48,4 +48,8 @@
       loop_control:
         loop_var: artefact
 
+    - name: Push WL systemd service (and enable service)
+      include: weblogic_startup_service.yml
+      tags: service
+
   when: wls_file.stat.exists == false or force_install|default(false)
