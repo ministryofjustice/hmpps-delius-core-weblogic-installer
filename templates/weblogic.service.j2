@@ -9,10 +9,10 @@ User={{ wls_service_user.name }}
 {% else %}
 User=oracle
 {% endif %}
-WorkingDirectory={{ mw_home | default('/u01/app/oracle/middleware') }}/user_projects/domains/NDelius
-ExecStart={{ mw_home | default('/u01/app/oracle/middleware') }}/user_projects/domains/NDelius/startWebLogic.sh
+WorkingDirectory={{ mw_home | default('/u01/app/oracle/middleware') }}/user_projects/domains/{{ domain_name | default('NDelius') }}/
+ExecStart={{ mw_home | default('/u01/app/oracle/middleware') }}/user_projects/domains/{{ domain_name | default('NDelius') }}/startWebLogic.sh
 Restart=on-failure
-ExecStop={{ mw_home | default('/u01/app/oracle/middleware') }}/user_projects/domains/NDelius/bin/stopWebLogic.sh
+ExecStop={{ mw_home | default('/u01/app/oracle/middleware') }}/user_projects/domains/{{ domain_name | default('NDelius') }}/bin/stopWebLogic.sh
 
 [Install]
 WantedBy=multi-user.target
