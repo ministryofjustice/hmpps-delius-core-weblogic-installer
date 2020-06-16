@@ -21,7 +21,7 @@
   lineinfile:
     path: "{{ mw_home }}/utils/bsu/bsu.sh"
     regexp: '^MEM_ARGS='
-    line: 'MEM_ARGS="-Xms2048m -Xmx2048m"'
+    line: 'MEM_ARGS="{{ bsu_mem_args | default("-Xms2048m -Xmx2048m") }}"'
 
 - name: ensure permission on file are correct
   file:
