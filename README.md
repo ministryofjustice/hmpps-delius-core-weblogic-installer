@@ -43,6 +43,8 @@ weblogic_artefacts:
   - name: 'artifact.jar'
   - name: 'patch.zip'
 
+bsu_mem_args: "memory args for weblogic smart update utility. default=-Xms2048m -Xmx2048m"
+
 weblogic_patches:
   - name: "patch" #Excludes the extension
     command: "cli install command"
